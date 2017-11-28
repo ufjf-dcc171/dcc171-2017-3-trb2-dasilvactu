@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trabalho1.labprog3;
+package trabalho2.labprog3;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,22 +14,22 @@ import javax.swing.event.ListDataListener;
  *
  * @author Marcus
  */
-public class PedidosListModel implements ListModel<Pedido> {
-    private final List<Pedido> pedidos;
+public class MesasListModel implements ListModel<Mesa> {
+    private final List<Mesa> mesas;
     private final List<ListDataListener> dataListeners;
-    public PedidosListModel(List<Pedido> pedidos) {
-        this.pedidos = pedidos;
-        this.dataListeners = new ArrayList<>();
+    public MesasListModel(List<Mesa> mesas) {
+        this.mesas = mesas;
+        dataListeners = new ArrayList<>();
     }
 
     @Override
     public int getSize() {
-        return pedidos.size();
+        return mesas.size();
     }
 
     @Override
-    public Pedido getElementAt(int index) {
-        return pedidos.get(index);
+    public Mesa getElementAt(int index) {
+        return mesas.get(index);
     }
 
     @Override

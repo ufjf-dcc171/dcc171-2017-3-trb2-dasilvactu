@@ -3,8 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trabalho1.labprog3;
+package trabalho2.labprog3;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -14,19 +15,19 @@ import javax.swing.JFrame;
  *
  * @author Marcus
  */
-public class Trabalho1LabProg3 {
+public class Trabalho2LabProg3 {
 
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         JanelaMesas janela = new JanelaMesas(getSampleData());
         janela.setSize(800,500);
         janela.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         janela.setLocationRelativeTo(null);
         janela.setVisible(true);
     }
-    private static List<Mesa> getSampleData() {
+    private static List<Mesa> getSampleData() throws IOException {
         // TODO code application logic here
         Item i1 = new Item("X-burguer",1,2.00);
         Item i2 = new Item("Hamburguer",2,3.00);
@@ -50,6 +51,8 @@ public class Trabalho1LabProg3 {
         List<Mesa> mesas = new ArrayList<>();
         mesas.add(m1);
         mesas.add(m2);
+        Persistencia p = new Persistencia();
+        p.escreverArquivo(mesas);
         return mesas;
     }
 }

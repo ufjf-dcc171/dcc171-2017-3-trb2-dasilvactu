@@ -1,0 +1,11 @@
+2 Mesas
+1 Pedidos
+1 Mon Nov 27 23:44:11 BRST 2017 true null
+2 Itens
+Hamburguer 2 3.0
+Refrigerante 2 4.0
+1 Pedidos
+1 Mon Nov 27 23:44:11 BRST 2017 true null
+2 Itens
+X-burguer 1 2.0
+Refrigerante 2 4.0

@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trabalho1.labprog3;
+package trabalho2.labprog3;
 
 import java.text.DecimalFormat;
 
@@ -36,7 +36,7 @@ public class Item {
     public void setQuantidade(int quantidade) {
         this.quantidade = quantidade;
     }
-
+    
     @Override
     public String toString() {
         DecimalFormat formato = new DecimalFormat();

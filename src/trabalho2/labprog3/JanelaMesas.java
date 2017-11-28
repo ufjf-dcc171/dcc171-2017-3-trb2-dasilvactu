@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package trabalho1.labprog3;
+package trabalho2.labprog3;
 
 import java.awt.GridLayout;
 import java.awt.HeadlessException;
@@ -38,11 +38,9 @@ class JanelaMesas extends JFrame{
     private JTextArea lstItens = new JTextArea(10,50 );
     private JanelaPedido janelaPedido;
     public JanelaMesas(List<Mesa> sampleData) throws HeadlessException {
-        
         super("Lanchonete");
         lstItens.setEditable(false);
         this.mesas = sampleData;
-        
         JPanel componentes = new JPanel(new GridLayout(2,1));
         JPanel listaBotoes = new JPanel(new GridLayout(1,3));
         JPanel botoes = new JPanel(new GridLayout(5,1));
