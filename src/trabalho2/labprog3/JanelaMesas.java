@@ -9,7 +9,11 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,12 +26,14 @@ import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.util.Date;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 /**
  *
  * @author Marcus
  */
 class JanelaMesas extends JFrame{
-    private final List<Mesa> mesas;
+    private List<Mesa> mesas;
     private final JButton criaMesa = new JButton("Cria Mesa");
     private final JButton addItem = new JButton("Adiciona Item");
     private final JButton criaPedido = new JButton("Cria Pedido");
@@ -37,7 +43,11 @@ class JanelaMesas extends JFrame{
     private JList<Pedido> lstPedidos = new JList<Pedido>(new DefaultListModel<Pedido>());
     private JTextArea lstItens = new JTextArea(10,50 );
     private JanelaPedido janelaPedido;
-    public JanelaMesas(List<Mesa> sampleData) throws HeadlessException {
+    
+    public List<Mesa> getMesas() {
+        return mesas;
+    }
+    public JanelaMesas(List<Mesa> sampleData, Persistencia dados) throws HeadlessException {
         super("Lanchonete");
         lstItens.setEditable(false);
         this.mesas = sampleData;
@@ -78,11 +88,19 @@ class JanelaMesas extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 String mesa = JOptionPane.showInputDialog("Digite o número da Mesa");
                 if(mesa != null){
-                    Mesa m1 = new Mesa(Integer.parseInt(mesa));
-                    mesas.add(m1);
-                    lstMesas.updateUI();
+                    try {
+                        Mesa m1 = new Mesa(Integer.parseInt(mesa));
+                        mesas.add(m1);
+                        dados.escreverArquivo(mesas);
+                        mesas = dados.lerArquivo();
+                        lstMesas.updateUI();
+                    } catch (IOException | ParseException ex) {
+                        Logger.getLogger(JanelaMesas.class.getName()).log(Level.SEVERE, null, ex);
+                    }
                 }
+                
             }
+            
         });
         lstPedidos.addListSelectionListener(new ListSelectionListener() {
             @Override
@@ -101,7 +119,13 @@ class JanelaMesas extends JFrame{
                     if(selecionado.isStatus()){
                         getLstPedidos().getSelectedValue().calculaPreco();
                         getLstPedidos().getSelectedValue().setStatus(false);
-                        getLstPedidos().getSelectedValue().setFim(new Date());
+                        getLstPedidos().getSelectedValue().setFim(Calendar.getInstance());
+                        try {
+                            dados.escreverArquivo(mesas);
+                            mesas = dados.lerArquivo();
+                        } catch (IOException | ParseException ex) {
+                            Logger.getLogger(JanelaMesas.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         getLstPedidos().updateUI();
                         getLstItens().setText(selecionado.imprimeItens());
                     }
@@ -115,7 +139,7 @@ class JanelaMesas extends JFrame{
                 if(lstMesas.getSelectedValue()!=null){
                     if(getLstPedidos().getSelectedValue()!=null){
                         if(getLstPedidos().getSelectedValue().isStatus()){
-                            janelaPedido = new JanelaPedido(getLstPedidos().getSelectedValue().getItens(),JanelaMesas.this);
+                            janelaPedido = new JanelaPedido(getLstPedidos().getSelectedValue().getItens(),JanelaMesas.this, dados);
                         }else{
                             JOptionPane.showMessageDialog(null, "O pedido já está fechado, não é possível editar");
                         }
@@ -132,14 +156,15 @@ class JanelaMesas extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if(lstMesas.getSelectedValue()!=null){
                     Mesa selecionada = lstMesas.getSelectedValue();
-                    mesas.get(mesas.indexOf(selecionada)).getPedidos().add(new Pedido(selecionada.getPedidos().size()+1,new Date()));
+                    mesas.get(mesas.indexOf(selecionada)).getPedidos().add(new Pedido(selecionada.getPedidos().size()+1,Calendar.getInstance()));
                     lstPedidos.updateUI();
                     int ultimo = selecionada.getPedidos().size()-1;
                     lstPedidos.setSelectedIndex(ultimo);
-                    janelaPedido = new JanelaPedido(selecionada.getPedidos().get(ultimo).getItens(),JanelaMesas.this);
+                    janelaPedido = new JanelaPedido(selecionada.getPedidos().get(ultimo).getItens(),JanelaMesas.this,dados);
                 }else{
                     JOptionPane.showMessageDialog(null, "Selecione uma Mesa");
                 }
+                
             }
         });
         addItem.addActionListener(new ActionListener() {
@@ -148,7 +173,7 @@ class JanelaMesas extends JFrame{
                 if(lstMesas.getSelectedValue()!=null){
                     if(getLstPedidos().getSelectedValue()!=null){
                         if(getLstPedidos().getSelectedValue().isStatus()){
-                            janelaPedido = new JanelaPedido(getLstPedidos().getSelectedValue().getItens(),JanelaMesas.this);
+                            janelaPedido = new JanelaPedido(getLstPedidos().getSelectedValue().getItens(),JanelaMesas.this,dados);
                         }else{
                             JOptionPane.showMessageDialog(null, "O pedido já está fechado, não é possível editar");
                         }
@@ -160,6 +185,10 @@ class JanelaMesas extends JFrame{
                 }
             }
         });
+    }
+
+    public void setMesas(List<Mesa> mesas) {
+        this.mesas = mesas;
     }
 
     public JTextArea getLstItens() {

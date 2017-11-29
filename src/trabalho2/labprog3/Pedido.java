@@ -8,6 +8,7 @@ package trabalho2.labprog3;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,15 +19,15 @@ import java.util.List;
 public class Pedido {
     private int codigo;
     private List<Item> itens;
-    private Date inicio;
-    private Date fim;
+    private Calendar inicio;
+    private Calendar fim;
     private boolean status;
     private double total;
     public Pedido() {
         this.itens = new ArrayList<>();
         
     }
-    public Pedido(int codigo, Date inicio){
+    public Pedido(int codigo, Calendar inicio){
         this.codigo = codigo;
         this.itens = new ArrayList<>();
         this.inicio = inicio;
@@ -42,19 +43,19 @@ public class Pedido {
         this.codigo = codigo;
     }
 
-    public Date getInicio() {
+    public Calendar getInicio() {
         return inicio;
     }
 
-    public void setInicio(Date inicio) {
+    public void setInicio(Calendar inicio) {
         this.inicio = inicio;
     }
 
-    public Date getFim() {
+    public Calendar getFim() {
         return fim;
     }
 
-    public void setFim(Date fim) {
+    public void setFim(Calendar fim) {
         this.fim = fim;
     }
 
@@ -65,14 +66,26 @@ public class Pedido {
     public void setItens(List<Item> itens) {
         this.itens = itens;
     }
+    public String imprimeData(Calendar data){
+        String dataFormatada =data.get(Calendar.DATE)+"/"
+                +data.get(Calendar.MONTH) + "/"
+                +data.get(Calendar.YEAR)+ " "+
+                +data.get(Calendar.HOUR)+":"
+                +data.get(Calendar.MINUTE)+":"+
+                data.get(Calendar.SECOND);
+        return dataFormatada;
+    }
     public String imprimeItens(){
-        SimpleDateFormat s = new SimpleDateFormat("HH:mm:ss");
         String valor="";
-        s.setLenient(false);
-        String dataFormatada = s.format(this.getInicio());
+        
+        String dataFormatada = this.getInicio().get(Calendar.HOUR)+":"
+                +this.getInicio().get(Calendar.MINUTE)+":"+
+                this.getInicio().get(Calendar.SECOND);
         valor+="Inicio: "+dataFormatada;
         if(this.getFim()!=null){
-            String finalFormatado = s.format(this.getFim());
+            String finalFormatado = this.getFim().get(Calendar.HOUR)+":"
+                +this.getFim().get(Calendar.MINUTE)+":"+
+                this.getFim().get(Calendar.SECOND);
             valor+= "   Fim: " + finalFormatado +"\n";
         }else{
             valor+="\n";

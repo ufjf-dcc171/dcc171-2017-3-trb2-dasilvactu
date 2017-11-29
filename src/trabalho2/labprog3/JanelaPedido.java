@@ -9,7 +9,12 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.text.ParseException;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,7 +43,7 @@ class JanelaPedido extends  JFrame{
     private final JTextField preco = new JTextField();
     private final JTextField quantidade = new JTextField();
     private JanelaMesas janelaMesa;
-    public JanelaPedido(List<Item> itens, JanelaMesas janelaMesa) throws HeadlessException {
+    public JanelaPedido(List<Item> itens, JanelaMesas janelaMesa, Persistencia dados) throws HeadlessException {
         super("Detalhes Pedido");
         this.itens= itens;
         setResizable(false);
@@ -92,6 +97,13 @@ class JanelaPedido extends  JFrame{
                         itens.get(i).setQuantidade(Integer.parseInt(quantidade.getText()));
                         itens.get(i).setPreco(Double.parseDouble(preco.getText()));
                         janelaMesa.getLstItens().setText(janelaMesa.getLstPedidos().getSelectedValue().imprimeItens());
+                        try {
+                            dados.escreverArquivo(janelaMesa.getMesas());
+                            janelaMesa.setMesas(dados.lerArquivo());
+                        } catch (IOException | ParseException ex) {
+                            Logger.getLogger(JanelaPedido.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+                        
                         lstItem.updateUI();
                         lstItem.clearSelection();
                     }
@@ -102,6 +114,12 @@ class JanelaPedido extends  JFrame{
                     }else{
                         itens.add(new Item(nome.getText(), Integer.parseInt(quantidade.getText()),Double.parseDouble(preco.getText())));
                         janelaMesa.getLstItens().setText(janelaMesa.getLstPedidos().getSelectedValue().imprimeItens());
+                        try {
+                            dados.escreverArquivo(janelaMesa.getMesas());
+                            janelaMesa.setMesas(dados.lerArquivo());
+                        } catch (IOException | ParseException ex) {
+                            Logger.getLogger(JanelaPedido.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                         lstItem.updateUI();
                         lstItem.clearSelection();
                         nome.setText("");
@@ -118,6 +136,12 @@ class JanelaPedido extends  JFrame{
                 Item selecionado = lstItem.getSelectedValue();
                 if(selecionado!= null){
                     itens.remove(selecionado);
+                    try {
+                            dados.escreverArquivo(janelaMesa.getMesas());
+                            janelaMesa.setMesas(dados.lerArquivo());
+                        } catch (IOException | ParseException ex) {
+                            Logger.getLogger(JanelaPedido.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     lstItem.updateUI();
                     lstItem.clearSelection();
                     nome.setText("");
