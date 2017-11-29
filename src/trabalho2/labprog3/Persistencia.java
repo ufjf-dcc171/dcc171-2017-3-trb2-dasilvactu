@@ -71,7 +71,6 @@ public class Persistencia {
                 dados = linha.split(" ");
                 int codigo = Integer.parseInt(dados[0]);
                 String data = dados[1]+ " "+dados[2]; 
-                System.out.println(data);
                 Calendar inicio = Calendar.getInstance();
                 inicio.setTime(formato.parse(data));
                 boolean status = Boolean.parseBoolean(dados[3]);
