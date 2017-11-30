@@ -124,7 +124,6 @@ class JanelaMesas extends JFrame{
                         System.out.println("Data fim Atualizada: "+getLstPedidos().getSelectedValue().getFim().getTime());
                         getLstPedidos().updateUI();
                         try {
-//                            System.out.println(selecionado.getFim().getTime());
                             dados.escreverArquivo(mesas);
                             mesas = dados.lerArquivo();
                         } catch (IOException | ParseException ex) {
