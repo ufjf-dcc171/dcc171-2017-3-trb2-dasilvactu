@@ -67,9 +67,11 @@ public class Pedido {
         this.itens = itens;
     }
     public String imprimeData(Calendar data){
+        if(data == null) System.out.println("Nulo");
+        System.out.println("Entrou     "+ data.getTime());
         String dataFormatada =data.get(Calendar.DATE)+"/"
                 +data.get(Calendar.MONTH) + "/"
-                +data.get(Calendar.YEAR)+ " "+
+                +data.get(Calendar.YEAR)+ " "
                 +data.get(Calendar.HOUR)+":"
                 +data.get(Calendar.MINUTE)+":"+
                 data.get(Calendar.SECOND);

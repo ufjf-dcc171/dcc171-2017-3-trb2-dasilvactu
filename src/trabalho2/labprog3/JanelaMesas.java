@@ -9,7 +9,6 @@ import java.awt.GridLayout;
 import java.awt.HeadlessException;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -25,7 +24,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
@@ -76,7 +74,7 @@ class JanelaMesas extends JFrame{
                 getLstItens().setText("");
                 Mesa selecionada = lstMesas.getSelectedValue();
                 if(selecionada!= null){
-                    System.out.println(selecionada);
+//                    System.out.println(selecionada);
                     getLstPedidos().setModel(new PedidosListModel(selecionada.getPedidos()));
                 }else{
                     getLstPedidos().setModel(new DefaultListModel<>());
@@ -115,12 +113,18 @@ class JanelaMesas extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 Pedido selecionado = getLstPedidos().getSelectedValue();
+                System.out.println("Pedido "+ selecionado.getCodigo()+ "  selecionado");
                 if(selecionado!=null){
                     if(selecionado.isStatus()){
-                        getLstPedidos().getSelectedValue().calculaPreco();
                         getLstPedidos().getSelectedValue().setStatus(false);
-                        getLstPedidos().getSelectedValue().setFim(Calendar.getInstance());
+                        SimpleDateFormat formato = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+                        formato.setLenient(false);
+                        Calendar fim = Calendar.getInstance();
+                        getLstPedidos().getSelectedValue().setFim(fim);
+                        System.out.println("Data fim Atualizada: "+getLstPedidos().getSelectedValue().getFim().getTime());
+                        getLstPedidos().updateUI();
                         try {
+//                            System.out.println(selecionado.getFim().getTime());
                             dados.escreverArquivo(mesas);
                             mesas = dados.lerArquivo();
                         } catch (IOException | ParseException ex) {
@@ -131,6 +135,7 @@ class JanelaMesas extends JFrame{
                     }
                  
                 }
+                getLstPedidos().clearSelection();
             }
         });
         editaPedido.addActionListener(new ActionListener() {
@@ -156,11 +161,14 @@ class JanelaMesas extends JFrame{
             public void actionPerformed(ActionEvent e) {
                 if(lstMesas.getSelectedValue()!=null){
                     Mesa selecionada = lstMesas.getSelectedValue();
-                    mesas.get(mesas.indexOf(selecionada)).getPedidos().add(new Pedido(selecionada.getPedidos().size()+1,Calendar.getInstance()));
+                    System.out.println(selecionada.getNumero());
+                    mesas.get(lstMesas.getSelectedIndex()).getPedidos().add(new Pedido(selecionada.getPedidos().size()+1,Calendar.getInstance()));;
+//                    mesas.get(mesas.indexOf(selecionada)).getPedidos().add(new Pedido(selecionada.getPedidos().size()+1,Calendar.getInstance()));
                     lstPedidos.updateUI();
                     int ultimo = selecionada.getPedidos().size()-1;
                     lstPedidos.setSelectedIndex(ultimo);
                     janelaPedido = new JanelaPedido(selecionada.getPedidos().get(ultimo).getItens(),JanelaMesas.this,dados);
+                    lstPedidos.updateUI();
                 }else{
                     JOptionPane.showMessageDialog(null, "Selecione uma Mesa");
                 }

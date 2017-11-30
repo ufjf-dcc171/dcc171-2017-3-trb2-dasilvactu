@@ -31,10 +31,16 @@ public class Persistencia {
             gravaArq.println("Mesa "+m.getNumero());
             gravaArq.println(m.getPedidos().size()+ " Pedidos");
             for(Pedido p:m.getPedidos()){
-                if(p.getFim()==null){
-                    gravaArq.println(p.getCodigo()+ " "+ p.imprimeData(p.getInicio()) + " " + p.isStatus() + " "+ p.getFim());
+                if(p.isStatus()){
+                    
+                    String imprime = p.getCodigo()+ " "+ p.imprimeData(p.getInicio()) + " " + p.isStatus();
+                    System.out.println("Sem Fim "+imprime);
+                    
+                    gravaArq.println(imprime);
                 }else{
-                    gravaArq.println(p.getCodigo()+ " "+ p.getInicio().getTime() + " " + p.isStatus() + " "+ p.imprimeData(p.getFim()));
+                    String imprime = p.getCodigo()+ " "+ p.imprimeData(p.getInicio()) + " " + p.isStatus() + " "+ p.imprimeData(p.getFim());
+                    System.out.println("Com fim "+imprime);
+                    gravaArq.println(imprime);
                 }
                 
                 gravaArq.println(p.getItens().size()+ " Itens");
@@ -54,9 +60,11 @@ public class Persistencia {
         FileReader arq = new FileReader("dados.txt");
         BufferedReader lerArq = new BufferedReader(arq);
         String linha = lerArq.readLine();
+        List<Mesa> mesas = new ArrayList<>();
+        if(linha==null) return mesas;
         String dados[] = linha.split(" ");
         int num_mesas = Integer.parseInt(dados[0]);
-        List<Mesa> mesas = new ArrayList<>();
+        
         for(int i=0; i<num_mesas; i++){
             linha = lerArq.readLine();
             dados= linha.split(" ");
@@ -75,16 +83,21 @@ public class Persistencia {
                 inicio.setTime(formato.parse(data));
                 boolean status = Boolean.parseBoolean(dados[3]);
                 Calendar fim = Calendar.getInstance();
+                Pedido p = new Pedido(codigo, inicio);
+//                System.out.println(dados[4]);
                 if(status){
                     fim = null;
+                    p.setStatus(status);
                 }else{
                     String datafim = dados[4]+ " "+dados[5];
                     fim.setTime(formato.parse(datafim));
+                    p.setFim(fim);
+                    p.setStatus(status);
                 }
                 linha = lerArq.readLine();
                 dados = linha.split(" ");
                 int num_itens = Integer.parseInt(dados[0]);
-                Pedido p = new Pedido(codigo, inicio);
+                
                 for(int k=0; k< num_itens; k++){
                     linha = lerArq.readLine();
                     dados = linha.split(" ");
@@ -98,7 +111,6 @@ public class Persistencia {
             
             
             mesas.add(m);
-//            escreverArquivo(mesas);
         }
         return mesas;
     }
